@@ -1,0 +1,28 @@
+name: Render Jacob Pixel Animation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install rendering tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip pillow
+      - name: Render 30-second vertical animation
+        run: python render.py
+      - name: Upload MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacob-pixel-animation-mp4
+          path: jacob-pixel-animation.mp4
+          retention-days: 7
